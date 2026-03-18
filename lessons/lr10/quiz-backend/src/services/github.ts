@@ -91,10 +91,18 @@ async function getGitHubUser(accessToken: string): Promise<GitHubUser> {
 
 export async function getGitHubUserByCode(code: string): Promise<GitHubUser> {
   if (code.startsWith("test_")) {
+    const suffix = code.replace('test_', '') || 'default'
+    let hash = 0;
+    for (let i = 0; i < suffix.length; i++) {
+      hash = ((hash << 5) - hash) + suffix.charCodeAt(i);
+      hash |= 0;
+    }
+    const uniqueId = Math.abs(hash);
+    
     return {
-      id: 123456,
-      email: "testuser@example.com",
-      name: "Test User",
+      id: uniqueId,
+      email: `user_${suffix}@example.com`,
+      name: `User ${suffix}`,
     };
   }
 
